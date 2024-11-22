@@ -32,7 +32,7 @@ jobs:
 
           # どうやらここが複数の@を1行の空白区切りに整えてくれるらしい
           DISCORD_USER_IDS=$(echo "$GITHUB_USERNAMES" | while read -r GITHUB_USERNAME; do
-          jq -r ".\"$GITHUB_USERNAME\" // \"\"" < ./username.json
+          jq -r ".\"$GITHUB_USERNAME\" // \"\"" < ./sample.json
           done | tr '\n' ' ')
 
           echo "$DISCORD_USER_IDS"
