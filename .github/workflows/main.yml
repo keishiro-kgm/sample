@@ -44,7 +44,7 @@ jobs:
             MENTION_STRING=$(echo "$DISCORD_USER_IDS" | sed 's/ /> <@/g')
             MENTION_STRING="<@$MENTION_STRING>"
             #ここまで
-            echo "Mention found, sending notification to <@$DISCORD_USER_ID>..."
+            echo "Mention found, sending notification to <@$DISCORD_USER_IDS>..."
             echo "$MENTION_STRING"
 
           else
