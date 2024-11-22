@@ -12,7 +12,7 @@ env:
 jobs:
   notify_discord:
     runs-on: ubuntu-latest
-    if: github.event.issue != null
+    if: github.event != null
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
