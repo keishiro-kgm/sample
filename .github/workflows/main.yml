@@ -21,14 +21,10 @@ jobs:
         run: sudo apt-get install jq
         
       - name: Debag Send notification to Discord
-        run: |
-          if [ -n "${{ github.event.pull_request.html_url }}" ]; then
-            PR_URL="${{ github.event.pull_request.html_url }}"
-          else
-            PR_URL="${{ github.event.issue.html_url }}"
-          fi
-
+        env:
           COMMENT_BODY: ${{ github.event.comment.body }}
+          PR_URL: ${{ github.event.pull_request.html_url || github.event.issue.pull_request.html_url }}
+        run: |
           GITHUB_USERNAMES=$(echo "$COMMENT_BODY" | grep -oP '@[\w.-]+' || echo "")
 
           echo "$COMMENT_BODY"
