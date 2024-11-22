@@ -22,10 +22,16 @@ jobs:
         
       - name: Debag Send notification to Discord
         run: |
-          COMMENT_BODY="@user1 @user2 @user-three Let's check this!"
+          if [ -n "${{ github.event.pull_request.html_url }}" ]; then
+            PR_URL="${{ github.event.pull_request.html_url }}"
+          else
+            PR_URL="${{ github.event.issue.html_url }}"
+
+          COMMENT_BODY: ${{ github.event.comment.body }}
           GITHUB_USERNAMES=$(echo "$COMMENT_BODY" | grep -oP '@[\w.-]+' || echo "")
 
           echo "$COMMENT_BODY"
+          echo "$PR_URL"
 
           if [ -z "$GITHUB_USERNAMES" ]; then
             echo "No mentions found in the comment."
