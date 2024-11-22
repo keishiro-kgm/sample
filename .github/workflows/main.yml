@@ -20,40 +20,44 @@ jobs:
       - name: Set up jq
         run: sudo apt-get install jq
         
-      - name: Debag Send notification to Discord
+      - name: Debag get notification to Discord
+        id : discord
         env:
           COMMENT_BODY: ${{ github.event.comment.body }}
           PR_URL: ${{ github.event.pull_request.html_url || github.event.issue.pull_request.html_url }}
         run: |
+          # コメントからGitHubアカウント名を抽出（例: @username）
           GITHUB_USERNAMES=$(echo "$COMMENT_BODY" | grep -oP '@[\w.-]+' || echo "")
-
-          echo "$COMMENT_BODY"
-          echo "$PR_URL"
-
+          
+          # メンションを取得できるか調べる．できなかったら処理終了
           if [ -z "$GITHUB_USERNAMES" ]; then
             echo "No mentions found in the comment."
             exit 0
           fi
 
-          # どうやらここが複数の@を1行の空白区切りに整えてくれるらしい
+          # @ごとに取得したGITHUB_USERNAMESをもとに，各DISCORD_USER_IDを取得し，1行の空白区切りに整える
           DISCORD_USER_IDS=$(echo "$GITHUB_USERNAMES" | while read -r GITHUB_USERNAME; do
-          jq -r ".\"$GITHUB_USERNAME\" // \"\"" < ./sample.json
+          jq -r ".\"$GITHUB_USERNAME\" // \"\"" < ./username.json
           done | tr '\n' ' ')
-
-          echo "$DISCORD_USER_IDS"
-
+          echo "DISCORD_USER_IDS=${{ DISCORD_USER_IDS }}" >> $GITHUB_ENV
+          
+      - name: Debug send notification to Discord
+        run: |
+          echo $"DISCORD_USER_IDS"
           # Discordで紐付けされたアカウントのメンションが見つかった場合のみ通知を送信
           if [ -n "$DISCORD_USER_IDS" ]; then
           
-            #複数メンションのために取り付け
-            MENTION_STRING=$(echo "$DISCORD_USER_IDS"| xargs | sed 's/ /> <@/g')
+            #空白区切りの文字列を<@id>という形になるように整形
+            MENTION_STRING=$(echo "$DISCORD_USER_IDS" | xargs | sed 's/ /> <@/g')
             MENTION_STRING="<@$MENTION_STRING>"
-            #ここまで
-            echo "Mention found, sending notification to <@$DISCORD_USER_IDS>..."
-            echo "$MENTION_STRING"
 
+            echo "Mention found, sending notification to <@$DISCORD_USER_ID>..."
+            curl -H "Content-Type: application/json" \
+                 -X POST \
+                 -d "$(jq -n \
+                       --arg content "$MENTION_STRING コメントが来たやで彡(ﾟ)(ﾟ) [View PR]($PR_URL)" \
+                       '{ "content": $content }')" \
+                 "$WEBHOOK_URL"
           else
             echo "No valid GitHub username found, skipping notification."
           fi
-      
-
