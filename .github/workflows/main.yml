@@ -41,7 +41,7 @@ jobs:
           if [ -n "$DISCORD_USER_IDS" ]; then
           
             #複数メンションのために取り付け
-            MENTION_STRING=$(echo "$DISCORD_USER_IDS" | sed 's/ /> <@/g')
+            MENTION_STRING=$(echo "$DISCORD_USER_IDS"| xargs | sed 's/ /> <@/g')
             MENTION_STRING="<@$MENTION_STRING>"
             #ここまで
             echo "Mention found, sending notification to <@$DISCORD_USER_IDS>..."
