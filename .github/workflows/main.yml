@@ -26,6 +26,7 @@ jobs:
             PR_URL="${{ github.event.pull_request.html_url }}"
           else
             PR_URL="${{ github.event.issue.html_url }}"
+          fi
 
           COMMENT_BODY: ${{ github.event.comment.body }}
           GITHUB_USERNAMES=$(echo "$COMMENT_BODY" | grep -oP '@[\w.-]+' || echo "")
