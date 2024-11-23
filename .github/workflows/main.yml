@@ -36,7 +36,7 @@ jobs:
 
           # GITHUB_USERNAMESをもとに，JSONから各DISCORD_USER_IDを取得し，1行の空白区切りに整える
           DISCORD_USER_IDS=$(echo "$GITHUB_USERNAMES" | while read -r GITHUB_USERNAME; do
-          jq -r ".\"$GITHUB_USERNAME\" // \"\"" < ./username.json
+          jq -r ".\"$GITHUB_USERNAME\" // \"\"" < ./sample.json
           done | tr '\n' ' ')
           echo "DISCORD_USER_IDS=${{ DISCORD_USER_IDS }}" >> $GITHUB_ENV
           
