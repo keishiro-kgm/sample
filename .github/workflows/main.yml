@@ -35,13 +35,13 @@ jobs:
             exit 0
           fi
 
-          echo $"GITHUB_USERNAMES"
+          echo "$GITHUB_USERNAMES"
 
           # GITHUB_USERNAMESをもとに，JSONから各DISCORD_USER_IDを取得し，1行の空白区切りに整える
           DISCORD_USER_IDS=$(echo "$GITHUB_USERNAMES" | while read -r GITHUB_USERNAME; do
           jq -r ".\"$GITHUB_USERNAME\" // \"\"" < ./sample.json
           done | tr '\n' ' ')
-          echo $"DISCORD_USER_IDS"
+          echo "$DISCORD_USER_IDS"
           echo "DISCORD_USER_IDS=$DISCORD_USER_IDS" >> $GITHUB_ENV
           
       - name: Debug send notification to Discord
