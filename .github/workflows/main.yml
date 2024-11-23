@@ -42,7 +42,7 @@ jobs:
           
       - name: Debug send notification to Discord
         env : 
-          DISCORD_USER_IDS : ${{ env.DISCORD_USER_IDS || "" }}
+          DISCORD_USER_IDS : ${{ env.DISCORD_USER_IDS }}
         run : |
           echo $"DISCORD_USER_IDS"
           # Discordで紐付けされたアカウントのメンションが見つかった場合のみ通知を送信
