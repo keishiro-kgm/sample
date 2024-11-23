@@ -38,7 +38,7 @@ jobs:
           DISCORD_USER_IDS=$(echo "$GITHUB_USERNAMES" | while read -r GITHUB_USERNAME; do
           jq -r ".\"$GITHUB_USERNAME\" // \"\"" < ./sample.json
           done | tr '\n' ' ')
-          echo "DISCORD_USER_IDS=${{ DISCORD_USER_IDS }}" >> $GITHUB_ENV
+          echo "DISCORD_USER_IDS=$DISCORD_USER_IDS" >> $GITHUB_ENV
           
       - name: Debug send notification to Discord
         env : 
